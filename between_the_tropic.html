@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BETWEEN THE TROPICS | 热带浮生</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Peranakan Pastel Theme */
+        :root {
+            --color-bg: #fbf9f6;
+            --color-text: #4a5452; /* dark dusty sage */
+            --color-mint: #b2d2c3;
+            --color-dusty-blue: #9eb1c0;
+            --color-coral: #f0a696;
+            --color-carmine: #c86f72;
+            --color-white: #ffffff;
+        }
+
+        body { 
+            background-color: var(--color-bg); 
+            color: var(--color-text);
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .title-font {
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .section-padding { padding: 6rem 1rem; }
+        
+        .nav-blur { 
+            background: rgba(251, 249, 246, 0.85); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid rgba(158, 177, 192, 0.2); 
+        }
+
+        /* Accents */
+        .text-carmine { color: var(--color-carmine); }
+        .text-coral { color: var(--color-coral); }
+        .text-dusty-blue { color: var(--color-dusty-blue); }
+        .text-mint { color: var(--color-mint); }
+        
+        .bg-mint { background-color: var(--color-mint); }
+        .bg-coral { background-color: var(--color-coral); }
+        .bg-dusty-blue { background-color: var(--color-dusty-blue); }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--color-coral), var(--color-carmine)); 
+            color: white; 
+            font-weight: 600; 
+            letter-spacing: 1px;
+            border-radius: 9999px;
+            box-shadow: 0 8px 20px rgba(240, 166, 150, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(240, 166, 150, 0.4);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--color-dusty-blue);
+            color: var(--color-text);
+            font-weight: 600;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background-color: var(--color-dusty-blue);
+            color: white;
+        }
+
+        .card-bg { 
+            background: #ffffff; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.04); 
+            border-radius: 24px;
+            border: 1px solid rgba(178, 210, 195, 0.2);
+            overflow: hidden;
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-bg:hover {
+            transform: translateY(-6px);
+        }
+
+        /* Mystery Box CSS Design */
+        .mystery-box-container {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f1f5f4; /* soft backdrop */
+            border-radius: 20px 20px 0 0;
+            overflow: hidden;
+        }
+        .mystery-box-inner {
+            width: 60%;
+            height: 60%;
+            background: linear-gradient(135deg, var(--color-white) 0%, var(--color-mint) 100%);
+            border-radius: 24px;
+            box-shadow: 
+                inset -5px -5px 15px rgba(0,0,0,0.05), 
+                inset 5px 5px 15px rgba(255,255,255,1), 
+                10px 15px 25px rgba(158, 177, 192, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid rgba(255,255,255,0.9);
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .mystery-box-inner::before {
+            content: '?';
+            font-size: 5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: var(--color-dusty-blue);
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.08);
+            transform: translateZ(20px);
+        }
+
+        /* Hover animation for boxes */
+        .card-bg:hover .mystery-box-inner, .hover-box-trigger:hover .mystery-box-inner {
+            transform: scale(1.05) rotateY(12deg) rotateX(8deg);
+        }
+
+        /* Box Color Variants */
+        .box-coral { background: linear-gradient(135deg, var(--color-white) 0%, var(--color-coral) 100%); }
+        .box-coral::before { color: var(--color-carmine); }
+
+        .box-blue { background: linear-gradient(135deg, var(--color-white) 0%, var(--color-dusty-blue) 100%); }
+        .box-blue::before { color: var(--color-white); }
+        
+        .box-carmine { background: linear-gradient(135deg, var(--color-coral) 0%, var(--color-carmine) 100%); border-color: rgba(255,255,255,0.4); }
+        .box-carmine::before { color: var(--color-white); }
+
+        .image-filter {
+            filter: sepia(10%) contrast(95%) brightness(102%) saturate(110%);
+        }
+
+        .hero-h { height: 85vh; }
+        
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body x-data="appData()" class="min-h-screen antialiased overflow-x-hidden relative">
+
+    <!-- Background Ambient Blobs -->
+    <div class="blob bg-mint w-96 h-96 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-coral w-[30rem] h-[30rem] top-1/3 right-0 translate-x-1/3"></div>
+    <div class="blob bg-dusty-blue w-[40rem] h-[40rem] bottom-0 left-1/4 translate-y-1/3"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 nav-blur transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <span class="title-font text-2xl tracking-wide text-carmine uppercase" x-text="lang === 'en' ? 'BETWEEN THE TROPICS' : '热带浮生'"></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center font-medium text-sm">
+                    <a href="#brand-story" class="hover:text-carmine transition" x-text="t.navStory"></a>
+                    <a href="#sg-features" class="hover:text-carmine transition" x-text="t.navFeatures"></a>
+                    
+                    <!-- Dropdown for Blind Boxes -->
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="hover:text-carmine transition flex items-center gap-1 py-2">
+                            <span x-text="t.navBlindBox"></span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div x-show="open" x-transition.opacity class="absolute top-full left-0 w-56 bg-white shadow-xl rounded-2xl overflow-hidden border border-mint/30 py-2 z-50">
+                            <a href="#daily-accessories" class="block px-5 py-3 hover:bg-mint/15 text-sm transition" x-text="t.navDaily"></a>
+                            <a href="#festive-accessories" class="block px-5 py-3 hover:bg-mint/15 text-sm transition" x-text="t.navFestive"></a>
+                        </div>
+                    </div>
+
+                    <a href="#limited-exhibition" class="hover:text-carmine transition" x-text="t.navLimited"></a>
+                    
+                    <button @click="toggleLang()" class="ml-4 px-4 py-1.5 border-2 border-dusty-blue text-dusty-blue hover:bg-dusty-blue hover:text-white rounded-full text-xs font-bold transition flex items-center gap-1">
+                        <span x-text="lang === 'en' ? '中' : 'EN'"></span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button @click="toggleLang()" class="px-3 py-1 border-2 border-dusty-blue rounded-full text-xs font-bold text-dusty-blue">
+                        <span x-text="lang === 'en' ? '中' : 'EN'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative hero-h flex items-center justify-center">
+        <div class="max-w-7xl mx-auto px-4 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center z-10 pt-20">
+            <!-- Text Content -->
+            <div class="text-left">
+                <div class="inline-block px-4 py-1 rounded-full bg-mint/30 text-dusty-blue font-bold text-sm mb-6 tracking-wide" x-text="t.heroBadge"></div>
+                <h1 class="text-5xl md:text-7xl font-bold title-font mb-6 leading-tight text-carmine uppercase" x-html="t.heroTitle"></h1>
+                <p class="text-xl mb-8 opacity-80 max-w-lg leading-relaxed" x-text="t.heroSub"></p>
+                <div class="flex gap-4">
+                    <button class="btn-primary px-8 py-4 text-lg" x-text="t.heroBtn"></button>
+                </div>
+            </div>
+            <!-- Mystery Box Visual -->
+            <div class="relative flex justify-center mt-10 md:mt-0 hover-box-trigger cursor-pointer">
+                <div class="absolute inset-0 bg-coral/20 rounded-full blur-3xl scale-125"></div>
+                <!-- Hero Huge Box -->
+                <div class="w-[350px] h-[350px] md:w-[450px] md:h-[450px] relative z-10">
+                    <div class="mystery-box-container bg-transparent" style="border-radius: 40px;">
+                        <div class="mystery-box-inner box-coral w-[70%] h-[70%] text-[6rem]"></div>
+                    </div>
+                </div>
+                
+                <!-- Floating Elements -->
+                <div class="absolute right-0 top-10 bg-white/90 backdrop-blur px-5 py-3 rounded-2xl shadow-xl z-20 animate-bounce" style="animation-duration: 3s;">
+                    <p class="text-sm font-bold text-carmine" x-text="t.heroFloat1"></p>
+                </div>
+                <div class="absolute left-0 bottom-20 bg-white/90 backdrop-blur px-5 py-3 rounded-2xl shadow-xl z-20 animate-bounce" style="animation-duration: 4.5s;">
+                    <p class="text-sm font-bold text-dusty-blue" x-text="t.heroFloat2"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品牌故事 / Brand Story -->
+    <section id="brand-story" class="section-padding bg-white/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="order-2 md:order-1 relative p-10 bg-mint/10 rounded-[3rem] hover-box-trigger flex justify-center items-center">
+                    <div class="w-[300px] h-[300px]">
+                        <div class="mystery-box-container bg-transparent">
+                            <div class="mystery-box-inner box-blue w-[80%] h-[80%]"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2">
+                    <h2 class="text-sm font-bold tracking-widest text-dusty-blue uppercase mb-3" x-text="t.storySubTitle"></h2>
+                    <h3 class="text-4xl md:text-5xl title-font mb-8 text-carmine" x-text="t.storyTitle"></h3>
+                    <p class="text-lg leading-relaxed mb-6 opacity-80" x-text="t.storyDesc1"></p>
+                    <p class="text-lg leading-relaxed opacity-80" x-text="t.storyDesc2"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 新加坡特色 / SG Features -->
+    <section id="sg-features" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl title-font mb-4 text-carmine" x-text="t.featTitle"></h2>
+                <p class="text-xl opacity-80" x-text="t.featSub"></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Box 1 -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-mint/10"><div class="mystery-box-inner"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-dusty-blue" x-text="t.feat1"></h3>
+                    </div>
+                </div>
+                <!-- Box 2 -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-coral/10"><div class="mystery-box-inner box-coral"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-dusty-blue" x-text="t.feat2"></h3>
+                    </div>
+                </div>
+                <!-- Box 3 -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-dusty-blue/10"><div class="mystery-box-inner box-blue"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-dusty-blue" x-text="t.feat3"></h3>
+                    </div>
+                </div>
+                <!-- Box 4 -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-[#fcf2ef]"><div class="mystery-box-inner box-carmine"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-dusty-blue" x-text="t.feat4"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 盲盒: 日常配饰 / Daily Accessories -->
+    <section id="daily-accessories" class="section-padding bg-mint/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="px-4 py-1.5 rounded-full bg-white text-carmine font-bold text-sm shadow-sm inline-block mb-4" x-text="t.navBlindBox"></span>
+                <h2 class="text-4xl title-font mb-4 text-dusty-blue" x-text="t.dailyTitle"></h2>
+                <p class="text-lg opacity-80" x-text="t.dailySub"></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Resort Style -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-white" style="aspect-ratio: 4/3;">
+                        <div class="mystery-box-inner box-blue"></div>
+                    </div>
+                    <div class="p-8 text-center bg-white border-t border-mint/20">
+                        <h3 class="text-2xl font-bold title-font text-carmine mb-2" x-text="t.daily1Title"></h3>
+                        <p class="text-sm opacity-70" x-text="t.daily1Desc"></p>
+                    </div>
+                </div>
+                <!-- Commuter Style -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-white" style="aspect-ratio: 4/3;">
+                        <div class="mystery-box-inner box-coral"></div>
+                    </div>
+                    <div class="p-8 text-center bg-white border-t border-coral/20">
+                        <h3 class="text-2xl font-bold title-font text-carmine mb-2" x-text="t.daily2Title"></h3>
+                        <p class="text-sm opacity-70" x-text="t.daily2Desc"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 盲盒: 节日特别系列配饰 / Festive Accessories -->
+    <section id="festive-accessories" class="section-padding bg-coral/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="px-4 py-1.5 rounded-full bg-white text-carmine font-bold text-sm shadow-sm inline-block mb-4" x-text="t.navBlindBox"></span>
+                <h2 class="text-4xl title-font mb-4 text-dusty-blue" x-text="t.festiveTitle"></h2>
+                <p class="text-lg opacity-80" x-text="t.festiveSub"></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- CNY -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-carmine/5"><div class="mystery-box-inner box-carmine"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-carmine" x-text="t.festive1"></h3>
+                    </div>
+                </div>
+                <!-- Christmas -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-mint/10"><div class="mystery-box-inner"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-mint" style="color: #6da38e;" x-text="t.festive2"></h3>
+                    </div>
+                </div>
+                <!-- Deepavali -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-[#fcf2ef]"><div class="mystery-box-inner box-coral"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-coral" style="color: #d7816f;" x-text="t.festive3"></h3>
+                    </div>
+                </div>
+                <!-- Hari Raya -->
+                <div class="card-bg cursor-pointer">
+                    <div class="mystery-box-container bg-dusty-blue/10"><div class="mystery-box-inner box-blue"></div></div>
+                    <div class="p-6 text-center flex-1 bg-white">
+                        <h3 class="text-xl font-bold title-font text-dusty-blue" x-text="t.festive4"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 珍藏限量展览 / Limited Exhibition -->
+    <section id="limited-exhibition" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl md:text-5xl title-font mb-4 text-carmine" x-text="t.limitedTitle"></h2>
+                    <p class="text-xl opacity-80" x-text="t.limitedSub"></p>
+                </div>
+            </div>
+            
+            <div class="flex justify-center">
+                <!-- Mega Figure -->
+                <div class="card-bg group cursor-pointer p-2 relative w-full md:w-1/2">
+                    <div class="absolute top-6 left-6 z-10 bg-white/90 px-4 py-1.5 rounded-full text-xs font-bold text-dusty-blue shadow-md uppercase" x-text="t.tagLimited"></div>
+                    <div class="w-full h-[400px] rounded-[1.25rem] bg-mint/20 flex justify-center items-center">
+                        <div class="mystery-box-container bg-transparent"><div class="mystery-box-inner box-blue w-[60%] h-[60%]"></div></div>
+                    </div>
+                    <div class="p-8 text-center">
+                        <h3 class="text-3xl title-font mb-2 text-carmine" x-text="t.limit1"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Post Your Collection / Social -->
+    <section class="section-padding overflow-hidden relative my-10 mx-4 md:mx-10 rounded-[3rem] bg-gradient-to-r from-mint/30 via-bg-white to-coral/20">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl title-font mb-6 text-carmine" x-text="t.postTitle"></h2>
+            <p class="text-xl mb-10 opacity-90" x-text="t.postSub"></p>
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-10">
+                <span class="px-6 py-2 bg-white rounded-full text-sm font-bold shadow-sm text-dusty-blue" x-text="t.hash1"></span>
+                <span class="px-6 py-2 bg-white rounded-full text-sm font-bold shadow-sm text-coral" x-text="t.hash2"></span>
+            </div>
+            
+            <button class="btn-primary px-10 py-4 text-lg shadow-lg shadow-coral/30" x-text="t.postBtn"></button>
+        </div>
+    </section>
+
+    <!-- Locate Us -->
+    <section id="locate" class="section-padding relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="card-bg p-8 md:p-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl title-font mb-8 text-carmine" x-text="t.locateTitle"></h2>
+                        <div class="bg-mint/10 p-6 rounded-2xl mb-8">
+                            <p class="text-xl font-bold mb-2 text-dusty-blue">POP-UP BOUTIQUE @ ION ORCHARD</p>
+                            <p class="text-lg opacity-80">2 Orchard Turn, #B4-XX<br>Singapore 238801</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-coral/10 text-coral">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm opacity-60" x-text="t.hoursLabel"></p>
+                                    <p class="font-bold text-lg">10:00 AM - 10:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="mt-8 px-8 py-3 btn-outline" x-text="t.mapBtn"></button>
+                    </div>
+                    <div class="h-[400px] w-full rounded-2xl overflow-hidden relative shadow-inner">
+                        <img src="https://images.unsplash.com/photo-1595139049909-02ebda8c5a49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover image-filter" alt="Store Location">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-white border-t border-mint/20 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-2xl title-font font-bold mb-6 tracking-widest text-dusty-blue uppercase" x-text="lang === 'en' ? 'BETWEEN THE TROPICS' : '热带浮生'"></h2>
+            <p class="text-sm opacity-50" x-text="t.footerCopy"></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('appData', () => ({
+                lang: 'zh', // Default to zh
+                translations: {
+                    en: {
+                        navStory: 'BRAND STORY',
+                        navFeatures: 'SG FEATURES',
+                        navBlindBox: 'BLIND BOXES',
+                        navDaily: 'Daily Accessories',
+                        navFestive: 'Festive Series',
+                        navLimited: 'LIMITED EXHIBITION',
+                        
+                        heroBadge: 'SERIES 01 MYSTERY DROP',
+                        heroTitle: 'BETWEEN<br>THE TROPICS',
+                        heroSub: 'Unbox the essence of the Lion City. Every pastel box holds a unique piece of modern Peranakan romance and local memories.',
+                        heroBtn: 'Start Unboxing',
+                        heroFloat1: 'What\'s inside?',
+                        heroFloat2: 'Nyonya Colors',
+                        
+                        storySubTitle: 'Our Journey',
+                        storyTitle: 'Boxing Up The Lion City',
+                        storyDesc1: 'In this garden city where tradition meets tomorrow, we wanted to create more than just a souvenir. For the modern traveler and the urban explorer, a journey is more than just sightseeing—it\'s a lifestyle and an emotional resonance.',
+                        storyDesc2: 'From the breeze of the tropical rainforest to the aroma of kopi in Nanyang alleyways, from the dazzling neon of Marina Bay to the lively chatter beneath HDB flats. We\'ve infused these unique "slices of Singapore" into our Modern Peranakan Pastel palette, designing collectibles you can hold in your hands. Whether you\'re a first-time visitor or an islander who loves this land, every unboxing is a magical trip back to your favorite Singaporean moments.',
+                        
+                        featTitle: 'SINGAPORE FEATURES',
+                        featSub: 'Discover the iconic symbols of the Little Red Dot in every box.',
+                        feat1: 'The Merlion',
+                        feat2: 'Otter Family',
+                        feat3: 'Peranakan Culture',
+                        feat4: 'SG Landmarks',
+                        
+                        dailyTitle: 'Daily Accessories Series',
+                        dailySub: 'Elevate your everyday look with a touch of SG charm.',
+                        daily1Title: 'Resort Style',
+                        daily1Desc: 'Breezy, tropical vibes perfect for a Sentosa weekend.',
+                        daily2Title: 'Commuter Style',
+                        daily2Desc: 'Sleek, minimalist pieces for the CBD hustle.',
+                        
+                        festiveTitle: 'Festive Special Series',
+                        festiveSub: 'Celebrating the cultural harmony of Singapore.',
+                        festive1: 'Chinese New Year',
+                        festive2: 'Christmas',
+                        festive3: 'Deepavali',
+                        festive4: 'Hari Raya',
+                        
+                        limitedTitle: 'LIMITED EXHIBITION',
+                        limitedSub: 'Ultra-rare collectibles showcasing unique local heritage.',
+                        tagLimited: 'Exhibition Only',
+                        limit1: 'Mega Figure',
+                        
+                        postTitle: 'SHARE YOUR COLLECTION',
+                        postSub: 'Unbox, snap, and tag us to be featured in our monthly collector\'s gallery.',
+                        hash1: '#BetweenTheTropics',
+                        hash2: '#PastelAesthetic',
+                        postBtn: 'Join the Community',
+                        
+                        locateTitle: 'FIND THE POP-UP',
+                        hoursLabel: 'Opening Hours',
+                        mapBtn: 'Get Directions',
+
+                        footerCopy: '© 2024 BETWEEN THE TROPICS. Made with love in SG.'
+                    },
+                    zh: {
+                        navStory: '品牌故事',
+                        navFeatures: '新加坡特色',
+                        navBlindBox: '盲盒',
+                        navDaily: '日常配饰',
+                        navFestive: '节日特别系列配饰',
+                        navLimited: '珍藏限量展览',
+                        
+                        heroBadge: '第一弹 惊喜盲盒',
+                        heroTitle: '热带浮生<br>潮玩盲盒',
+                        heroSub: '每一次开箱，都是一次重返狮城的旅行。在娘惹莫兰迪色的盲盒中，邂逅专属于你的新加坡记忆。',
+                        heroBtn: '即刻开箱',
+                        heroFloat1: '隐藏款会是什么？',
+                        heroFloat2: '治愈系莫兰迪',
+                        
+                        storySubTitle: '品牌初心',
+                        storyTitle: '把狮城记忆装进盲盒',
+                        storyDesc1: '在这座花园城市，传统与未来交织。我们希望为你打造的不仅仅是一个旅游纪念品，而是为你打包狮城的专属记忆。对于热爱探索的你而言，旅行不仅仅是打卡，更是一种生活方式与情感共鸣。',
+                        storyDesc2: '从热带雨林的微风到南洋街巷的咖啡香，从滨海湾的璀璨霓虹到组屋楼下的市井烟火。我们将这些独特的“新加坡切片”融入娘惹莫兰迪的柔和色彩中，设计成可以捧在手心的潮玩。无论你是初次造访的旅人，还是热爱这片土地的岛民，让每一次开箱，都像是一场重温狮城心动瞬间的奇妙旅程。',
+                        
+                        featTitle: '新加坡特色',
+                        featSub: '拆开盲盒，遇见狮城的经典符号。',
+                        feat1: '鱼尾狮',
+                        feat2: '水獭家族',
+                        feat3: '娘惹文化',
+                        feat4: '新加坡地标',
+                        
+                        dailyTitle: '日常配饰系列',
+                        dailySub: '将南洋风情融入日常穿搭，点亮每一天。',
+                        daily1Title: '度假风组合',
+                        daily1Desc: '慵懒海岛气息，圣淘沙周末的完美点缀。',
+                        daily2Title: '通勤风组合',
+                        daily2Desc: '极简干练，CBD职场人的气质加分项。',
+                        
+                        festiveTitle: '节日特别系列配饰',
+                        festiveSub: '多元文化交融，庆祝每一个相聚的时刻。',
+                        festive1: '春节系列',
+                        festive2: '圣诞系列',
+                        festive3: '排灯节系列',
+                        festive4: '开斋节系列',
+                        
+                        limitedTitle: '珍藏限量展览',
+                        limitedSub: '定格狮城特有文化印记，博物馆级珍藏大体。',
+                        tagLimited: '展品限定',
+                        limit1: '大体收藏',
+                        
+                        postTitle: '晒出你的收藏',
+                        postSub: '分享你的开箱瞬间，融入家居的一角，解锁官方专属潮玩周边。',
+                        hash1: '#热带浮生潮玩',
+                        hash2: '#高颜值盲盒',
+                        postBtn: '加入玩家社群',
+
+                        locateTitle: '线下快闪店',
+                        hoursLabel: '营业时间',
+                        mapBtn: '查看导航',
+
+                        footerCopy: '© 2024 热带浮生. 新加坡原创设计.'
+                    }
+                },
+                get t() {
+                    return this.translations[this.lang];
+                },
+                toggleLang() {
+                    this.lang = this.lang === 'en' ? 'zh' : 'en';
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
